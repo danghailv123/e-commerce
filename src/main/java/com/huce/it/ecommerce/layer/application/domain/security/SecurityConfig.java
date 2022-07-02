@@ -39,9 +39,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationFilter.setFilterProcessesUrl("/huce/login");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//        http.authorizeRequests().antMatchers("/huce/login" , "/huce/refresh-token").permitAll();
-//        http.authorizeRequests().antMatchers(HttpMethod.GET , "/huce/accout/user/**").hasAnyAuthority("user" );
-//        http.authorizeRequests().antMatchers(HttpMethod.GET , "/**").hasAnyAuthority("admin");
+        http.authorizeRequests().antMatchers("/huce/login" , "/huce/refresh-token").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET , "/huce/accout/user/**").hasAnyAuthority("user" );
+        http.authorizeRequests().antMatchers(HttpMethod.GET , "/**").hasAnyAuthority("admin");
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter() , UsernamePasswordAuthenticationFilter.class);

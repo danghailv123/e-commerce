@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class ProductGroupService implements IProductGroupService {
 
     @Override
     public ResultResponse<ProductGroupDto> getListGroup(Integer limit, Integer page) {
-        Pageable pageable = PageRequest.of(page, 30,null);
+        Pageable pageable = PageRequest.of(page, 255, Sort.by("id").descending());
         Page<ProductGroup> productGroups = iProductGroupDao.findAll(pageable);
         Long total = productGroups.getTotalElements();
         List<ProductGroupDto> productGroupDtos = new ArrayList<>();
@@ -71,5 +72,10 @@ public class ProductGroupService implements IProductGroupService {
         resultResponse.setTotal(total);
         resultResponse.setTotalPage((int) (total / limit));
         return resultResponse;
+    }
+
+    @Override
+    public ProductGroupDto getGroup(Integer id) {
+        return Constants.SERIALIZER.convertValue(iProductGroupDao.getById(id),ProductGroupDto.class);
     }
 }

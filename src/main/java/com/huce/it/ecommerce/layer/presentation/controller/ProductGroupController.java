@@ -4,6 +4,7 @@ import com.huce.it.ecommerce.layer.application.domain.model.dto.ProductGroupDto;
 import com.huce.it.ecommerce.layer.application.domain.service.IProductGroupService;
 import com.huce.it.ecommerce.unitity.response.Response;
 import com.huce.it.ecommerce.unitity.response.ResponseFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -47,6 +48,15 @@ public class ProductGroupController {
     public Response getListProductGroup(@RequestParam(name = "limit", defaultValue = "30") Integer limit, @RequestParam(name = "page", defaultValue = "0") Integer page) {
         try {
             return ResponseFactory.getSuccessResponse(Response.SUCCESS, iProductGroupService.getListGroup(limit, page));
+        } catch (Exception exception) {
+            return ResponseFactory.getClientErrorResponse(exception.getMessage());
+        }
+    }
+
+    @GetMapping("/get")
+    public Response getProductGroup(@RequestParam(name = "id" , required = true) Integer id) {
+        try {
+            return ResponseFactory.getSuccessResponse(Response.SUCCESS, iProductGroupService.getGroup(id));
         } catch (Exception exception) {
             return ResponseFactory.getClientErrorResponse(exception.getMessage());
         }

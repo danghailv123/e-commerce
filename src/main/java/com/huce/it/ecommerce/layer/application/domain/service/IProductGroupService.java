@@ -9,4 +9,5 @@ public interface IProductGroupService {
     ProductGroupDto changeActive(ProductGroupDto productGroupDto) throws Exception;
     ProductGroupDto updateProductGroup(ProductGroupDto productGroupDto) throws Exception;
     ResultResponse<ProductGroupDto> getListGroup(Integer limit,Integer page);
+    ProductGroupDto getGroup(Integer id);
 }

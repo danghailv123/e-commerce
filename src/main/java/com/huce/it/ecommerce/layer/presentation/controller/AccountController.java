@@ -74,4 +74,14 @@ public class AccountController {
         }
     }
 
+    @GetMapping("/find-account")
+    public Response getAccount(@RequestParam(name = "email", required = true) String email) {
+        try {
+            return ResponseFactory.getSuccessResponse(Response.SUCCESS, iAccountService.getAccountByEmail(email));
+
+        } catch (Exception exception) {
+            return ResponseFactory.getClientErrorResponse(exception.getMessage());
+        }
+    }
+
 }
