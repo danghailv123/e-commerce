@@ -10,4 +10,5 @@ public interface IPromotionService {
 
     PromotionDto update(PromotionDto promotionDto) throws Exception;
     ResultResponse<PromotionDto> getPage(Integer page,Integer limit);
+    PromotionDto getPromotion(Integer id);
 }

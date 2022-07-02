@@ -71,4 +71,9 @@ public class PromotionService implements IPromotionService {
         resultResponse.setTotal(promotionPage.getTotalElements());
         return resultResponse;
     }
+
+    @Override
+    public PromotionDto getPromotion(Integer id) {
+        return Constants.SERIALIZER.convertValue(iPromotionDao.getById(id),PromotionDto.class);
+    }
 }
