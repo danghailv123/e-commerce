@@ -2,6 +2,7 @@ package com.huce.it.ecommerce.layer.presentation.controller;
 
 import com.huce.it.ecommerce.layer.application.domain.model.dto.AccountDto;
 import com.huce.it.ecommerce.layer.application.domain.service.IAccountService;
+import com.huce.it.ecommerce.unitity.exception.ClientException;
 import com.huce.it.ecommerce.unitity.response.Response;
 import com.huce.it.ecommerce.unitity.response.ResponseFactory;
 import org.slf4j.Logger;
@@ -47,7 +48,7 @@ public class AccountController {
     }
      */
 
-    @PostMapping("/change-password")
+    @PostMapping("/user/change-password")
     public Response changePassword( @RequestBody AccountDto accountDto) {
         try {
             iAccountService.changePasswordAccount(accountDto);
@@ -81,6 +82,25 @@ public class AccountController {
 
         } catch (Exception exception) {
             return ResponseFactory.getClientErrorResponse(exception.getMessage());
+        }
+    }
+
+    @GetMapping("/user/get")
+    public Response getAccountById(@RequestParam(name = "id", required = true) Integer id) {
+        try {
+            return ResponseFactory.getSuccessResponse(Response.SUCCESS, iAccountService.getAccountById(id));
+
+        } catch (Exception exception) {
+            return ResponseFactory.getClientErrorResponse(exception.getMessage());
+        }
+    }
+
+    @PostMapping("/user/update")
+    public void updateAccount( @RequestBody AccountDto accountDto) {
+        try {
+            iAccountService.updateAccount(accountDto);
+
+        } catch (Exception exception) {
         }
     }
 

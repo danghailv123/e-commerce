@@ -21,8 +21,6 @@ Tsrc/main/java/com/huce/it/ecommerce/layer/application/domain/entity/ProductType
 asrc/main/java/com/huce/it/ecommerce/layer/application/domain/service/impl/ProductTypeService.java,2\7\2773f02f4a8156091eab2f4836f0e35e9e1a5826
 Å
 Qsrc/main/java/com/huce/it/ecommerce/layer/application/domain/dao/IAccountDao.java,7\0\705c96dfa3ddf2760b2b7bb690b4489c523bb4cf
-é
-^src/main/java/com/huce/it/ecommerce/layer/application/domain/service/IProductGroupService.java,2\d\2df78e4028725fe3566de1532fcd3eebd6888266
 ã
 [src/main/java/com/huce/it/ecommerce/layer/application/domain/service/ITrademarkService.java,2\5\252c508e5c2859a6386fa008032d5da9ec9945de
 É
@@ -41,14 +39,8 @@ Xsrc/main/java/com/huce/it/ecommerce/layer/application/domain/model/dto/Trademar
 Xsrc/main/java/com/huce/it/ecommerce/layer/application/domain/model/dto/PromotionDto.java,0\c\0cee2688fdc98854f617b8661e5e7ee7fef2b452
 ä
 Zsrc/main/java/com/huce/it/ecommerce/layer/presentation/controller/PromotionController.java,f\6\f6918bf64c1c57f77e587c72429895aa47d31da4
-ç
-]src/main/java/com/huce/it/ecommerce/layer/application/domain/service/impl/AccountService.java,8\0\80d5e0c14666f6e1c270fe08cf2341728f6e2a0d
-â
-Ysrc/main/java/com/huce/it/ecommerce/layer/application/domain/service/IAccountService.java,b\3\b33192534cad00509a248bedfd42f02f4c73df5c
 Ü
 Vsrc/main/java/com/huce/it/ecommerce/layer/application/domain/model/dto/AccountDto.java,e\3\e3bb299ece1ed4ae5a2c4a29155bdd51bb627184
-à
-Xsrc/main/java/com/huce/it/ecommerce/layer/presentation/controller/AccountController.java,e\0\e077d4399af6bb6acc01fc88a1c3bfc96b4f1c71
 à
 Xsrc/main/java/com/huce/it/ecommerce/layer/presentation/controller/ProductController.java,f\6\f6942b1b78ec251b021d60b8aaa08a60385fd1b7
 â

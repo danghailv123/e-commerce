@@ -3,6 +3,7 @@ package com.huce.it.ecommerce.layer.application.domain.service.impl;
 import com.huce.it.ecommerce.config.Constants;
 import com.huce.it.ecommerce.layer.application.domain.dao.IAccountDao;
 import com.huce.it.ecommerce.layer.application.domain.entity.Account;
+import com.huce.it.ecommerce.layer.application.domain.entity.ProductGroup;
 import com.huce.it.ecommerce.layer.application.domain.model.dto.AccountDto;
 import com.huce.it.ecommerce.layer.application.domain.service.IAccountService;
 import com.huce.it.ecommerce.unitity.response.ResultResponse;
@@ -90,6 +91,22 @@ public class AccountService implements IAccountService, UserDetailsService {
         }
         iAccountDao.save(account);
         logger.info("change status account "+accountDto.getEmail());
+    }
+
+    @Override
+    public Account getAccountById(Integer id) {
+        return iAccountDao.getById(id);
+    }
+
+    @Override
+    public void updateAccount(AccountDto account) throws Exception {
+
+        Account accountEdit = iAccountDao.getById(account.getUserId());
+        accountEdit.setName(account.getName());
+        accountEdit.setPhoneNumber(account.getPhoneNumber());
+        accountEdit.setEmail(account.getEmail());
+        iAccountDao.save(accountEdit);
+
     }
 
     @Override
