@@ -28,4 +28,5 @@ public class ReceiptDto {
     private String address;
 
     private Integer status;
+    private Float Sum;
 }

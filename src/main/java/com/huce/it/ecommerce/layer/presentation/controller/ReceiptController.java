@@ -45,7 +45,7 @@ public class ReceiptController {
         }
     }
 
-    @GetMapping("get-page")
+    @GetMapping("get-list")
     public Response getPageReceipt(@RequestParam(name = "page", required = false, defaultValue ="0")Integer page,
                                     @RequestParam(name = "limit",required = false,defaultValue = "10")Integer limit){
         try {

@@ -17,7 +17,7 @@ public class AccountController {
         this.iAccountService = iAccountService;
     }
 
-    @GetMapping("/list")
+    @GetMapping("/get-list")
     public Response getListAccount(@RequestParam(name = "limit", defaultValue = "10", required = false) Integer limit,
                                    @RequestParam(name = "page", defaultValue = "0", required = false) Integer page) {
         try {
@@ -30,7 +30,7 @@ public class AccountController {
 
 
     @PostMapping("/user/create")
-    public Response createAccount(AccountDto accountDto) {
+    public Response createAccount( @RequestBody AccountDto accountDto) {
         try {
             iAccountService.createAccount(accountDto);
             return ResponseFactory.getSuccessResponse(Response.SUCCESS);
@@ -48,7 +48,7 @@ public class AccountController {
      */
 
     @PostMapping("/change-password")
-    public Response changePassword(AccountDto accountDto) {
+    public Response changePassword( @RequestBody AccountDto accountDto) {
         try {
             iAccountService.changePasswordAccount(accountDto);
             return ResponseFactory.getSuccessResponse(Response.SUCCESS);
@@ -65,7 +65,7 @@ public class AccountController {
     }
     */
     @PostMapping("/change-status")
-    public Response changeStatus(AccountDto accountDto) {
+    public Response changeStatus( @RequestBody AccountDto accountDto) {
         try {
             iAccountService.activeAccount(accountDto);
             return ResponseFactory.getSuccessResponse(Response.SUCCESS);

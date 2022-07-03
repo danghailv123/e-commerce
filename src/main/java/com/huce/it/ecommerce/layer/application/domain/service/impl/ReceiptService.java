@@ -2,9 +2,8 @@ package com.huce.it.ecommerce.layer.application.domain.service.impl;
 
 import com.huce.it.ecommerce.config.Constants;
 import com.huce.it.ecommerce.layer.application.domain.dao.IReceiptDao;
-import com.huce.it.ecommerce.layer.application.domain.entity.Promotion;
 import com.huce.it.ecommerce.layer.application.domain.entity.Receipt;
-import com.huce.it.ecommerce.layer.application.domain.model.dto.PromotionDto;
+import com.huce.it.ecommerce.layer.application.domain.mapper.ReceiptMapper;
 import com.huce.it.ecommerce.layer.application.domain.model.dto.ReceiptDto;
 import com.huce.it.ecommerce.layer.application.domain.service.IReceiptService;
 import com.huce.it.ecommerce.unitity.response.ResultResponse;
@@ -22,10 +21,12 @@ import java.util.List;
 @Service
 public class ReceiptService implements IReceiptService {
     private final IReceiptDao iReceiptDao;
+    private final ReceiptMapper receiptMapper;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public ReceiptService(IReceiptDao iReceiptDao) {
+    public ReceiptService(IReceiptDao iReceiptDao, ReceiptMapper receiptMapper) {
         this.iReceiptDao = iReceiptDao;
+        this.receiptMapper = receiptMapper;
     }
 
     @Override
@@ -62,7 +63,7 @@ public class ReceiptService implements IReceiptService {
         Page<Receipt> receiptPage = iReceiptDao.findAll(pageable);
         List<ReceiptDto> receiptDtos = new ArrayList<>();
         receiptPage.getContent().forEach(receipt -> {
-            receiptDtos.add(Constants.SERIALIZER.convertValue(receipt,ReceiptDto.class));
+            receiptDtos.add(receiptMapper.mapReceiptToReceiptDto(receipt));
         });
         ResultResponse<ReceiptDto> resultResponse = new ResultResponse<>();
         resultResponse.setPage(page);
