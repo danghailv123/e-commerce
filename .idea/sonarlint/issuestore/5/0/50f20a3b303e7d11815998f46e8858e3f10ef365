@@ -1,19 +1,8 @@
 
-Q	java:S125"<This block of commented-out lines of code should be removed.(ÌÊ—È
+Q	java:S125&"<This block of commented-out lines of code should be removed.(ÌÊ—È
 |
-java:S1128"ZRemove this unused import 'com.huce.it.ecommerce.layer.application.domain.entity.Account'.(–¥àåşÿÿÿÿ8ƒ©æ¢›0
-}
-java:S1128"`Remove this unused import 'com.huce.it.ecommerce.layer.application.domain.model.dto.AccountDto'.(–è¤û8„©æ¢›0
-e
-java:S1128	"HRemove this unused import 'org.springframework.context.annotation.Bean'.(‚î‰Ş8…©æ¢›0
-
-java:S1128
-"]Remove this unused import 'org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder'.(åÅÚ…ûÿÿÿÿ8†©æ¢›0
-{
-java:S1128"YRemove this unused import 'org.springframework.security.crypto.password.PasswordEncoder'.(‰¡ßáÿÿÿÿÿ8‡©æ¢›0
-K
-java:S1128"/Remove this unused import 'java.sql.Timestamp'.(èò½+8ˆ©æ¢›0
-H
-java:S1128"+Remove this unused import 'java.util.Date'.(¸…¼ü8Š©æ¢›0
+java:S1128"_Remove this unused import 'com.huce.it.ecommerce.layer.application.domain.entity.ProductGroup'.(ÉÄä¼8–î§œ0
+„
+java:S1128	"gRemove this unused import 'com.huce.it.ecommerce.layer.application.domain.service.impl.ProductService'.(Ü™İ8™î§œ0
 I
 java:S1068"3Remove this unused "iAccountService" private field.(›ïıŒ

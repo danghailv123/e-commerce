@@ -47,6 +47,22 @@ public class ElasticsearchReadAdapter extends ElasticsearchAdapter {
         return getClient().search(searchRequest, RequestOptions.DEFAULT);
     }
 
+    public SearchResponse getAll(String index, BoolQueryBuilder bqb, String keySort, int limit, int page) throws IOException {
+        SearchRequest searchRequest = new SearchRequest(index);
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+
+        searchSourceBuilder.query(bqb);
+        searchSourceBuilder.size(limit);
+        searchSourceBuilder.from((page) * limit);
+        if (keySort != null) {
+            searchSourceBuilder.sort(keySort , SortOrder.DESC);
+        }
+        searchSourceBuilder.minScore(0.001F);
+        searchRequest.source(searchSourceBuilder);
+
+        return getClient().search(searchRequest, RequestOptions.DEFAULT);
+    }
+
     public SearchResponse searchAll(String index, BoolQueryBuilder bqb, List<Pair<String, SortOrder>> sorts) throws IOException {
         SearchRequest searchRequest = new SearchRequest(index);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();

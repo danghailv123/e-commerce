@@ -45,9 +45,10 @@ public class ProductGroupController {
     }
 
     @GetMapping("/get-list")
-    public Response getListProductGroup(@RequestParam(name = "limit", defaultValue = "30") Integer limit, @RequestParam(name = "page", defaultValue = "0") Integer page) {
+    public Response getListProductGroup(@RequestParam(name = "limit", defaultValue = "255") Integer limit,
+                                        @RequestParam(name = "page", defaultValue = "0") Integer page) {
         try {
-            return ResponseFactory.getSuccessResponse(Response.SUCCESS, iProductGroupService.getListGroup(limit, page));
+            return ResponseFactory.getSuccessResponse(Response.SUCCESS, iProductGroupService.getListGroup(limit, page ));
         } catch (Exception exception) {
             return ResponseFactory.getClientErrorResponse(exception.getMessage());
         }
@@ -61,4 +62,16 @@ public class ProductGroupController {
             return ResponseFactory.getClientErrorResponse(exception.getMessage());
         }
     }
+
+    @GetMapping("/get-es")
+    public Response getListProductGroup(@RequestParam(name = "limit", defaultValue = "255") Integer limit,
+                                        @RequestParam(name = "page", defaultValue = "0") Integer page,
+                                        @RequestParam(name = "keyword",required = false)String keyword) {
+        try {
+            return ResponseFactory.getSuccessResponse(Response.SUCCESS, iProductGroupService.getPage(limit, page , keyword));
+        } catch (Exception exception) {
+            return ResponseFactory.getClientErrorResponse(exception.getMessage());
+        }
+    }
+
 }

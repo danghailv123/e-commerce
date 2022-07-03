@@ -1,0 +1,14 @@
+
+[	java:S112I"FDefine and throw a dedicated exception instead of using a generic one.(íÊ‡²
+[	java:S112V"FDefine and throw a dedicated exception instead of using a generic one.(íÊ‡²
+\
+java:S3457,"AFormat specifiers should be used instead of string concatenation.(–’«¬üÿÿÿÿ
+V	java:S125F"<This block of commented-out lines of code should be removed.(Ï“› þÿÿÿÿ
+\
+java:S3457O"AFormat specifiers should be used instead of string concatenation.(¢ñÎúÿÿÿÿ
+W
+java:S3457]"AFormat specifiers should be used instead of string concatenation.(¶ì×ö
+u
+java:S1128"_Remove this unused import 'com.huce.it.ecommerce.layer.application.domain.entity.ProductGroup'.(ÉÄä¼
+Z
+java:S2583U"DChange this condition so that it does not always evaluate to "false"(íÕÀ«

@@ -2,7 +2,8 @@ package com.huce.it.ecommerce.layer.application.domain.service.impl;
 
 import com.huce.it.ecommerce.config.Constants;
 import com.huce.it.ecommerce.layer.application.domain.dao.IProductGroupDao;
-import com.huce.it.ecommerce.layer.application.domain.entity.Account;
+import com.huce.it.ecommerce.layer.application.domain.dao.elasticsearch.IElasticProductGroupDao;
+import com.huce.it.ecommerce.layer.application.domain.entity.Product;
 import com.huce.it.ecommerce.layer.application.domain.entity.ProductGroup;
 import com.huce.it.ecommerce.layer.application.domain.model.dto.ProductGroupDto;
 import com.huce.it.ecommerce.layer.application.domain.service.IProductGroupService;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,17 +24,21 @@ import java.util.List;
 public class ProductGroupService implements IProductGroupService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final IProductGroupDao iProductGroupDao;
+    private final IElasticProductGroupDao iElasticProductGroupDao;
 
-    public ProductGroupService(IProductGroupDao iProductGroupDao) {
+    public ProductGroupService(IProductGroupDao iProductGroupDao, IElasticProductGroupDao iElasticProductGroupDao) {
         this.iProductGroupDao = iProductGroupDao;
+        this.iElasticProductGroupDao = iElasticProductGroupDao;
     }
 
     @Override
-    public ProductGroupDto createGroup(ProductGroupDto productGroupDto) {
+    public ProductGroupDto createGroup(ProductGroupDto productGroupDto) throws IOException {
         ProductGroup productGroup = Constants.SERIALIZER.convertValue(productGroupDto,ProductGroup.class);
-        iProductGroupDao.save(productGroup);
-        logger.info("create product group " +productGroup.getName());
-        return Constants.SERIALIZER.convertValue(iProductGroupDao.save(productGroup),ProductGroupDto.class);
+
+        ProductGroup ProductGroup = iProductGroupDao.save(productGroup);
+        productGroupDto.setId(productGroup.getId());
+        iElasticProductGroupDao.save(productGroupDto);
+        return Constants.SERIALIZER.convertValue(ProductGroup,ProductGroupDto.class);
     }
 
     @Override
@@ -43,7 +49,7 @@ public class ProductGroupService implements IProductGroupService {
         }
         if (productGroupDto.getStatus()!=null)
             productGroup.setStatus(productGroupDto.getStatus());
-
+        iElasticProductGroupDao.save(Constants.SERIALIZER.convertValue(productGroup,ProductGroupDto.class));
         return Constants.SERIALIZER.convertValue(iProductGroupDao.save(productGroup),ProductGroupDto.class);
     }
 
@@ -55,6 +61,7 @@ public class ProductGroupService implements IProductGroupService {
         }
         if (productGroupDto.getName()!=null)
             productGroup.setName(productGroupDto.getName());
+        iElasticProductGroupDao.save(iElasticProductGroupDao.save(Constants.SERIALIZER.convertValue(productGroup,ProductGroupDto.class)));
         return Constants.SERIALIZER.convertValue(iProductGroupDao.save(productGroup),ProductGroupDto.class);
     }
 
@@ -77,5 +84,15 @@ public class ProductGroupService implements IProductGroupService {
     @Override
     public ProductGroupDto getGroup(Integer id) {
         return Constants.SERIALIZER.convertValue(iProductGroupDao.getById(id),ProductGroupDto.class);
+    }
+
+    @Override
+    public ResultResponse getPage(Integer limit, Integer page, String keyword) {
+        return iElasticProductGroupDao.search(keyword, limit, page);
+    }
+
+    @Override
+    public List<ProductGroup> getListGroup() {
+        return iProductGroupDao.findAll();
     }
 }

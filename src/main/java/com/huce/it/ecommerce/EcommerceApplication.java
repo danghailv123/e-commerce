@@ -1,24 +1,32 @@
 package com.huce.it.ecommerce;
 
-import com.huce.it.ecommerce.layer.application.domain.entity.Account;
-import com.huce.it.ecommerce.layer.application.domain.model.dto.AccountDto;
+import com.huce.it.ecommerce.config.Constants;
+import com.huce.it.ecommerce.layer.application.domain.dao.elasticsearch.IElasticProductGroupDao;
+import com.huce.it.ecommerce.layer.application.domain.entity.ProductGroup;
+import com.huce.it.ecommerce.layer.application.domain.model.dto.ProductGroupDto;
 import com.huce.it.ecommerce.layer.application.domain.service.IAccountService;
+import com.huce.it.ecommerce.layer.application.domain.service.impl.ProductGroupService;
+import com.huce.it.ecommerce.layer.application.domain.service.impl.ProductService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.io.IOException;
 
 @SpringBootApplication
 public class EcommerceApplication implements CommandLineRunner {
     private final IAccountService iAccountService;
+    private final IElasticProductGroupDao iElasticProductGroupDao;
+    private final ProductGroupService productGroupService;
 
-    public EcommerceApplication(IAccountService iAccountService) {
+
+
+    public EcommerceApplication(IAccountService iAccountService,
+                                IElasticProductGroupDao iElasticProductGroupDao,
+                                ProductGroupService productGroupService) {
         this.iAccountService = iAccountService;
+        this.iElasticProductGroupDao = iElasticProductGroupDao;
+        this.productGroupService = productGroupService;
     }
 
     public static void main(String[] args) {
@@ -38,6 +46,16 @@ public class EcommerceApplication implements CommandLineRunner {
 //            account.setEmail("admin@gmail.com");
 //            iAccountService.createAccount(account);
 //        }
+
+        productGroupService.getListGroup().forEach(productGroup -> {
+            ProductGroupDto productGroupDto = Constants.SERIALIZER.convertValue(productGroup,ProductGroupDto.class);
+            try {
+                iElasticProductGroupDao.save(productGroupDto);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 
 
