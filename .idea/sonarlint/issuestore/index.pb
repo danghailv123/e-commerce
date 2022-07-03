@@ -1,12 +1,8 @@
 
-M
-config/application.properties,1\4\14cf0cb27475db32ed084ad748593c819603812c
 m
 =src/main/java/com/huce/it/ecommerce/EcommerceApplication.java,5\0\50f20a3b303e7d11815998f46e8858e3f10ef365
 j
 :src/main/java/com/huce/it/ecommerce/config/CorsConfig.java,a\d\ad48e3b3b581bb1e1bc505c29928443d1d9374eb
-Ü
-Vsrc/main/java/com/huce/it/ecommerce/layer/application/domain/dao/IProductGroupDao.java,e\9\e94fa23384c4b714e3782d5ee87e34379e5af6df
 Ö
 Usrc/main/java/com/huce/it/ecommerce/layer/application/domain/dao/IProductTypeDao.java,8\0\8000b6448b2ffaca12dd26bbb00be95da53fa30e
 Ñ
@@ -41,16 +37,12 @@ Xsrc/main/java/com/huce/it/ecommerce/layer/application/domain/model/dto/Promotio
 Zsrc/main/java/com/huce/it/ecommerce/layer/presentation/controller/PromotionController.java,f\6\f6918bf64c1c57f77e587c72429895aa47d31da4
 Ü
 Vsrc/main/java/com/huce/it/ecommerce/layer/application/domain/model/dto/AccountDto.java,e\3\e3bb299ece1ed4ae5a2c4a29155bdd51bb627184
-à
-Xsrc/main/java/com/huce/it/ecommerce/layer/presentation/controller/ProductController.java,f\6\f6942b1b78ec251b021d60b8aaa08a60385fd1b7
 â
 Ysrc/main/java/com/huce/it/ecommerce/layer/presentation/controller/EvaluateController.java,e\5\e58f9538fe4795dfa074be31d56d83773ffcccfc
 r
 Bsrc/main/java/com/huce/it/ecommerce/unitity/response/Response.java,2\6\26cac592cecab6f1dd0caa0aac4f269ddf29b85e
 ä
 Zsrc/main/java/com/huce/it/ecommerce/layer/application/domain/mapper/ProductTypeMapper.java,d\5\d515bfefb570b2fb4e60d1b863c758405100b4e2
-ç
-]src/main/java/com/huce/it/ecommerce/layer/application/domain/service/impl/ProductService.java,9\e\9e2b955c30db8e6d5693a1f103c15c5b45d52ded
 Ü
 Vsrc/main/java/com/huce/it/ecommerce/layer/application/domain/entity/InvoiceDetail.java,e\6\e6141e397d99ca841c1161d74ea037728d99c84f
 é
