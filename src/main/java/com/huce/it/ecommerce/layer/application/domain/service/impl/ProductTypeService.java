@@ -2,6 +2,8 @@ package com.huce.it.ecommerce.layer.application.domain.service.impl;
 
 import com.huce.it.ecommerce.config.Constants;
 import com.huce.it.ecommerce.layer.application.domain.dao.IProductTypeDao;
+import com.huce.it.ecommerce.layer.application.domain.dao.elasticsearch.IElasticProductTypeDao;
+import com.huce.it.ecommerce.layer.application.domain.entity.ProductGroup;
 import com.huce.it.ecommerce.layer.application.domain.entity.ProductType;
 import com.huce.it.ecommerce.layer.application.domain.mapper.ProductTypeMapper;
 import com.huce.it.ecommerce.layer.application.domain.model.dto.ProductTypeDto;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,17 +28,22 @@ public class ProductTypeService implements IProductTypeService {
     private final IProductTypeDao iProductTypeDao;
     private final ProductTypeMapper productTypeMapper;
 
-    public ProductTypeService(IProductTypeDao iProductTypeDao, ProductTypeMapper productTypeMapper) {
+    private final IElasticProductTypeDao iElasticProductTypeDao;
+
+    public ProductTypeService(IProductTypeDao iProductTypeDao, ProductTypeMapper productTypeMapper, IElasticProductTypeDao iElasticProductTypeDao) {
         this.iProductTypeDao = iProductTypeDao;
         this.productTypeMapper = productTypeMapper;
+        this.iElasticProductTypeDao = iElasticProductTypeDao;
     }
 
 
     @Override
-    public ProductTypeDto createType(ProductTypeDto productTypeDto) {
+    public ProductTypeDto createType(ProductTypeDto productTypeDto) throws IOException {
         ProductType productType = Constants.SERIALIZER.convertValue(productTypeDto,ProductType.class);
-        iProductTypeDao.save(productType);
-        return Constants.SERIALIZER.convertValue(iProductTypeDao.save(productType), ProductTypeDto.class);
+        ProductType productType1 = iProductTypeDao.save(productType);
+        ProductTypeDto productTypeEs = productTypeMapper.mapperProductTypeToProductTypeDto(productType);
+        iElasticProductTypeDao.save(productTypeEs);
+        return Constants.SERIALIZER.convertValue(productType1, ProductTypeDto.class);
     }
 
     @Override
@@ -44,9 +52,12 @@ public class ProductTypeService implements IProductTypeService {
         if (productType==null){
             throw new Exception("product type not exist");
         }
-        if (productType.getStatus()!=null)
+        if (productType.getStatus()!=null){
             productType.setStatus(productTypeDto.getStatus());
 
+            ProductTypeDto productTypeDtoEs = productTypeMapper.mapperProductTypeToProductTypeDto(productType);
+            iElasticProductTypeDao.save(productTypeDtoEs);
+        }
         return Constants.SERIALIZER.convertValue(iProductTypeDao.save(productType),ProductTypeDto.class);
     }
 
@@ -56,8 +67,12 @@ public class ProductTypeService implements IProductTypeService {
         if (productType==null){
             throw new Exception("product Type not exist");
         }
-        if (productType.getName()!=null)
+        if (productType.getName()!=null){
             productType.setName(productTypeDto.getName());
+            productType.setProductGroupId(productTypeDto.getPg_id());
+            ProductTypeDto productTypeEs = productTypeMapper.mapperProductTypeToProductTypeDto(productType);
+            iElasticProductTypeDao.save(productTypeEs);
+        }
         return Constants.SERIALIZER.convertValue(iProductTypeDao.save(productType),ProductTypeDto.class);
     }
 
@@ -82,5 +97,15 @@ public class ProductTypeService implements IProductTypeService {
     @Override
     public ProductTypeDto getType(Integer id) {
         return productTypeMapper.mapperProductTypeToProductTypeDto(iProductTypeDao.getById(id)) ;
+    }
+
+    @Override
+    public ResultResponse getPage(Integer limit, Integer page, String keyword) {
+        return iElasticProductTypeDao.search(keyword , limit , page);
+    }
+
+    @Override
+    public List<ProductType> getListType() {
+        return iProductTypeDao.findAll();
     }
 }

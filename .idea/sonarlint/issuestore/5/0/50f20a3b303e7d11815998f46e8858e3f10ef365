@@ -1,8 +1,0 @@
-
-Q	java:S125&"<This block of commented-out lines of code should be removed.(ÌÊ—È
-|
-java:S1128"_Remove this unused import 'com.huce.it.ecommerce.layer.application.domain.entity.ProductGroup'.(ÉÄä¼8–î§œ0
-„
-java:S1128	"gRemove this unused import 'com.huce.it.ecommerce.layer.application.domain.service.impl.ProductService'.(Ü™İ8™î§œ0
-I
-java:S1068"3Remove this unused "iAccountService" private field.(›ïıŒ

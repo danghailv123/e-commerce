@@ -36,7 +36,7 @@ public class ProductGroupService implements IProductGroupService {
         ProductGroup productGroup = Constants.SERIALIZER.convertValue(productGroupDto,ProductGroup.class);
 
         ProductGroup ProductGroup = iProductGroupDao.save(productGroup);
-        productGroupDto.setId(productGroup.getId());
+        productGroupDto.setId(ProductGroup.getId());
         iElasticProductGroupDao.save(productGroupDto);
         return Constants.SERIALIZER.convertValue(ProductGroup,ProductGroupDto.class);
     }

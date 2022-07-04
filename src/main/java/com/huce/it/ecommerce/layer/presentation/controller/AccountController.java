@@ -19,7 +19,7 @@ public class AccountController {
     }
 
     @GetMapping("/get-list")
-    public Response getListAccount(@RequestParam(name = "limit", defaultValue = "10", required = false) Integer limit,
+    public Response getListAccount(@RequestParam(name = "limit", defaultValue = "255", required = false) Integer limit,
                                    @RequestParam(name = "page", defaultValue = "0", required = false) Integer page) {
         try {
             return ResponseFactory.getSuccessResponse(Response.SUCCESS, iAccountService.getAccounts(limit, page));
@@ -104,4 +104,15 @@ public class AccountController {
         }
     }
 
+    @GetMapping("/get-es")
+    public Response getListAccountEs(@RequestParam(name = "limit", defaultValue = "255", required = false) Integer limit,
+                                   @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
+                                     @RequestParam(name = "keyword",required = false)String keyword) {
+        try {
+            return ResponseFactory.getSuccessResponse(Response.SUCCESS, iAccountService.getPage(limit, page , keyword));
+
+        } catch (Exception exception) {
+            return ResponseFactory.getClientErrorResponse(exception.getMessage());
+        }
+    }
 }

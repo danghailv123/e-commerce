@@ -44,7 +44,7 @@ public class TrademarkController {
     }
 
     @GetMapping("/get-list")
-    public Response getListTrademark(@RequestParam(name = "limit", defaultValue = "30") Integer limit, @RequestParam(name = "page", defaultValue = "0") Integer page) {
+    public Response getListTrademark(@RequestParam(name = "limit", defaultValue = "255") Integer limit, @RequestParam(name = "page", defaultValue = "0") Integer page) {
         try {
             return ResponseFactory.getSuccessResponse(Response.SUCCESS, iTrademarkService.getListTrademark(limit, page));
         } catch (Exception exception) {
@@ -61,4 +61,14 @@ public class TrademarkController {
         }
     }
 
+    @GetMapping("/get-es")
+    public Response getListTrademarkEs(@RequestParam(name = "limit", defaultValue = "255") Integer limit,
+                                       @RequestParam(name = "page", defaultValue = "0") Integer page,
+                                       @RequestParam(name = "keyword",required = false)String keyword) {
+        try {
+            return ResponseFactory.getSuccessResponse(Response.SUCCESS, iTrademarkService.getPage(limit, page , keyword));
+        } catch (Exception exception) {
+            return ResponseFactory.getClientErrorResponse(exception.getMessage());
+        }
+    }
 }

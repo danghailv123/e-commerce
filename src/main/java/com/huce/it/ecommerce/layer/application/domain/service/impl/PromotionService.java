@@ -2,7 +2,10 @@ package com.huce.it.ecommerce.layer.application.domain.service.impl;
 
 import com.huce.it.ecommerce.config.Constants;
 import com.huce.it.ecommerce.layer.application.domain.dao.IPromotionDao;
+import com.huce.it.ecommerce.layer.application.domain.dao.elasticsearch.IElasticPromotionDao;
+import com.huce.it.ecommerce.layer.application.domain.entity.ProductType;
 import com.huce.it.ecommerce.layer.application.domain.entity.Promotion;
+import com.huce.it.ecommerce.layer.application.domain.model.dto.ProductTypeDto;
 import com.huce.it.ecommerce.layer.application.domain.model.dto.PromotionDto;
 import com.huce.it.ecommerce.layer.application.domain.service.IPromotionService;
 import com.huce.it.ecommerce.unitity.response.ResultResponse;
@@ -14,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,17 +26,20 @@ public class PromotionService implements IPromotionService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final IPromotionDao iPromotionDao;
+    private final IElasticPromotionDao iElasticPromotionDao;
 
-    public PromotionService(IPromotionDao iPromotionDao) {
+    public PromotionService(IPromotionDao iPromotionDao, IElasticPromotionDao iElasticPromotionDao) {
         this.iPromotionDao = iPromotionDao;
+        this.iElasticPromotionDao = iElasticPromotionDao;
     }
 
     @Override
-    public PromotionDto create(PromotionDto promotionDto) {
+    public PromotionDto create(PromotionDto promotionDto) throws IOException {
         Promotion promotion = Constants.SERIALIZER.convertValue(promotionDto, Promotion.class);
-        logger.info("create promotion " + promotion);
+        Promotion promotionEs = iPromotionDao.save(promotion);
+        iElasticPromotionDao.save(Constants.SERIALIZER.convertValue(promotionEs, PromotionDto.class));
 
-        return Constants.SERIALIZER.convertValue(iPromotionDao.save(promotion), PromotionDto.class);
+        return Constants.SERIALIZER.convertValue(promotionEs, PromotionDto.class);
     }
 
     @Override
@@ -53,6 +60,7 @@ public class PromotionService implements IPromotionService {
         if (promotionDto.getImage()!= null) promotion.setImage(promotionDto.getImage());
         if (promotionDto.getPercent()!= null) promotion.setPercent(promotionDto.getPercent());
         if (promotionDto.getToDate()!= null) promotion.setToDate(promotionDto.getToDate());
+        iElasticPromotionDao.save(Constants.SERIALIZER.convertValue(promotion, PromotionDto.class));
         return Constants.SERIALIZER.convertValue(iPromotionDao.save(promotion),PromotionDto.class);
     }
 
@@ -75,5 +83,28 @@ public class PromotionService implements IPromotionService {
     @Override
     public PromotionDto getPromotion(Integer id) {
         return Constants.SERIALIZER.convertValue(iPromotionDao.getById(id),PromotionDto.class);
+    }
+
+    @Override
+    public PromotionDto changeActive(PromotionDto promotionDto) throws Exception {
+        Promotion promotion = iPromotionDao.getById(promotionDto.getId());
+        if (promotion==null){
+            throw new Exception("promotion not exist");
+        }
+        if (promotionDto.getStatus()!=null){
+            promotion.setStatus(promotionDto.getStatus());
+            iElasticPromotionDao.save(Constants.SERIALIZER.convertValue(promotion, PromotionDto.class));
+        }
+        return Constants.SERIALIZER.convertValue(iPromotionDao.save(promotion),PromotionDto.class);
+    }
+
+    @Override
+    public ResultResponse getPage(Integer limit, Integer page, String keyword) {
+        return iElasticPromotionDao.search(keyword , limit , page);
+    }
+
+    @Override
+    public List<Promotion> getListPromotion() {
+        return iPromotionDao.findAll();
     }
 }

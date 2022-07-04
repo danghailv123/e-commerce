@@ -46,7 +46,7 @@ public class PromotionController {
 
     @GetMapping("get-list")
     public Response getPagePromotion(@RequestParam(name = "page", required = false, defaultValue ="0")Integer page,
-                                    @RequestParam(name = "limit",required = false,defaultValue = "10")Integer limit){
+                                    @RequestParam(name = "limit",required = false,defaultValue = "255")Integer limit){
         try {
             return ResponseFactory.getSuccessResponse(Response.SUCCESS, iPromotionService.getPage(page, limit));
         } catch (Exception exception) {
@@ -59,6 +59,17 @@ public class PromotionController {
     public Response getPromotion(@RequestParam(name = "id" , required = true) Integer id) {
         try {
             return ResponseFactory.getSuccessResponse(Response.SUCCESS, iPromotionService.getPromotion(id));
+        } catch (Exception exception) {
+            return ResponseFactory.getClientErrorResponse(exception.getMessage());
+        }
+    }
+
+    @GetMapping("get-es")
+    public Response getPagePromotionEs(@RequestParam(name = "page", required = false, defaultValue ="0")Integer page,
+                                     @RequestParam(name = "limit",required = false,defaultValue = "255")Integer limit,
+                                       @RequestParam(name = "keyword",required = false)String keyword){
+        try {
+            return ResponseFactory.getSuccessResponse(Response.SUCCESS, iPromotionService.getPage(page, limit , keyword));
         } catch (Exception exception) {
             return ResponseFactory.getClientErrorResponse(exception.getMessage());
         }

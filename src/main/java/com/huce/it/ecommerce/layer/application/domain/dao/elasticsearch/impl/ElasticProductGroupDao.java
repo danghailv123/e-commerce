@@ -17,7 +17,6 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +34,7 @@ public class ElasticProductGroupDao implements IElasticProductGroupDao {
     private Logger logger = LoggerFactory.getLogger(getClass());
     private final String INDEX;
 
-    public ElasticProductGroupDao(ElasticsearchReadAdapter elasticsearchReadAdapter, ElasticsearchWriteAdapter elasticsearchWriteAdapter, @Value("${index.product}") String index) {
+    public ElasticProductGroupDao(ElasticsearchReadAdapter elasticsearchReadAdapter, ElasticsearchWriteAdapter elasticsearchWriteAdapter, @Value("${index.product.group}") String index) {
         this.elasticsearchReadAdapter = elasticsearchReadAdapter;
         this.elasticsearchWriteAdapter = elasticsearchWriteAdapter;
         INDEX = index;

@@ -3,6 +3,7 @@ package com.huce.it.ecommerce.layer.application.domain.model.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.huce.it.ecommerce.layer.application.domain.constant.SearchFields;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,4 +35,5 @@ public class PromotionDto {
     private String image;
 
     private Integer status;
+    private String entry = SearchFields.PROMOTION;
 }

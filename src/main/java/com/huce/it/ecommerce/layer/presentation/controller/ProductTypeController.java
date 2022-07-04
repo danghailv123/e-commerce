@@ -63,4 +63,15 @@ public class ProductTypeController {
         }
     }
 
+    @GetMapping("/get-es")
+    public Response getListProductTypeEs(@RequestParam(name = "limit", defaultValue = "255") Integer limit,
+                                         @RequestParam(name = "page", defaultValue = "0") Integer page,
+                                         @RequestParam(name = "keyword",required = false)String keyword) {
+        try {
+            return ResponseFactory.getSuccessResponse(Response.SUCCESS, iProductTypeService.getPage(limit, page , keyword));
+        } catch (Exception exception) {
+            return ResponseFactory.getClientErrorResponse(exception.getMessage());
+        }
+    }
+
 }

@@ -2,8 +2,8 @@ package com.huce.it.ecommerce.layer.application.domain.service.impl;
 
 import com.huce.it.ecommerce.config.Constants;
 import com.huce.it.ecommerce.layer.application.domain.dao.IAccountDao;
+import com.huce.it.ecommerce.layer.application.domain.dao.elasticsearch.IElasticUserDao;
 import com.huce.it.ecommerce.layer.application.domain.entity.Account;
-import com.huce.it.ecommerce.layer.application.domain.entity.ProductGroup;
 import com.huce.it.ecommerce.layer.application.domain.model.dto.AccountDto;
 import com.huce.it.ecommerce.layer.application.domain.service.IAccountService;
 import com.huce.it.ecommerce.unitity.response.ResultResponse;
@@ -21,8 +21,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @Transactional
@@ -32,17 +34,21 @@ public class AccountService implements IAccountService, UserDetailsService {
     private final IAccountDao iAccountDao;
     private final PasswordEncoder passwordEncoder;
 
-    public AccountService(IAccountDao iAccountDao, PasswordEncoder passwordEncoder) {
+    private final IElasticUserDao iElasticUserDao;
+
+    public AccountService(IAccountDao iAccountDao, PasswordEncoder passwordEncoder, IElasticUserDao iElasticUserDao) {
         this.iAccountDao = iAccountDao;
         this.passwordEncoder = passwordEncoder;
+        this.iElasticUserDao = iElasticUserDao;
     }
 
     @Override
-    public void createAccount(AccountDto accountDto) {
+    public void createAccount(AccountDto accountDto) throws IOException {
         Account account = Constants.SERIALIZER.convertValue(accountDto, Account.class);
         account.setPassword(passwordEncoder.encode(account.getPassword()));
-        logger.info("save account " + account.getEmail());
-        iAccountDao.save(account);
+
+        Account accountEs = iAccountDao.save(account);
+        iElasticUserDao.save(Constants.SERIALIZER.convertValue(accountEs, AccountDto.class));
     }
 
     @Override
@@ -76,7 +82,7 @@ public class AccountService implements IAccountService, UserDetailsService {
             account.setPassword(passwordEncoder.encode(accountDto.getPassword()));
         }
         iAccountDao.save(account);
-        logger.info("change password account "+accountDto.getEmail());
+        iElasticUserDao.save(Constants.SERIALIZER.convertValue(account, AccountDto.class));
     }
 
     @Override
@@ -90,7 +96,7 @@ public class AccountService implements IAccountService, UserDetailsService {
             account.setStatus(accountDto.getStatus());
         }
         iAccountDao.save(account);
-        logger.info("change status account "+accountDto.getEmail());
+        iElasticUserDao.save(Constants.SERIALIZER.convertValue(account, AccountDto.class));
     }
 
     @Override
@@ -106,7 +112,18 @@ public class AccountService implements IAccountService, UserDetailsService {
         accountEdit.setPhoneNumber(account.getPhoneNumber());
         accountEdit.setEmail(account.getEmail());
         iAccountDao.save(accountEdit);
+        iElasticUserDao.save(Constants.SERIALIZER.convertValue(accountEdit, AccountDto.class));
 
+    }
+
+    @Override
+    public ResultResponse getPage(Integer limit, Integer page, String keyword) {
+        return iElasticUserDao.search(keyword , limit , page);
+    }
+
+    @Override
+    public List<Account> getListAccount() {
+        return iAccountDao.findAll();
     }
 
     @Override

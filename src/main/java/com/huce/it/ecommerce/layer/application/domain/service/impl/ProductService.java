@@ -4,15 +4,23 @@ import com.huce.it.ecommerce.config.Constants;
 import com.huce.it.ecommerce.layer.application.domain.dao.*;
 import com.huce.it.ecommerce.layer.application.domain.dao.elasticsearch.IElasticProductDao;
 import com.huce.it.ecommerce.layer.application.domain.entity.Product;
+import com.huce.it.ecommerce.layer.application.domain.entity.ProductGroup;
 import com.huce.it.ecommerce.layer.application.domain.entity.ProductType;
 import com.huce.it.ecommerce.layer.application.domain.model.dto.ProductDto;
+import com.huce.it.ecommerce.layer.application.domain.model.dto.ProductGroupDto;
 import com.huce.it.ecommerce.layer.application.domain.service.IProductService;
 import com.huce.it.ecommerce.unitity.response.ResultResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ProductService implements IProductService {
@@ -41,7 +49,7 @@ public class ProductService implements IProductService {
         ProductType productType = iProductTypeDao.getById(product.getPtId());
         productDto.setGroupName(iProductGroupDao.getNameById(productType.getProductGroupId()));
         productDto.setNameType(productType.getName());
-        productDto.setPromotionName(iPromotionDao.getById(product.getPromId()).getName());
+        productDto.setPromotionName( product.getPromId() != null ? iPromotionDao.getById(product.getPromId()).getName() : "");
         productDto.setTrademarkName(iTrademarkDao.getById(product.getTraId()).getName());
         iElasticProductDao.save(productDto);
         return productDto;
@@ -60,7 +68,7 @@ public class ProductService implements IProductService {
         ProductType productType = iProductTypeDao.getById(product.getPtId());
         productDto.setGroupName(iProductGroupDao.getNameById(productType.getProductGroupId()));
         productDto.setNameType(productType.getName());
-        productDto.setPromotionName(iPromotionDao.getById(product.getPromId()).getName());
+        productDto.setPromotionName( product.getPromId() != null ? iPromotionDao.getById(product.getPromId()).getName() : "");
         productDto.setTrademarkName(iTrademarkDao.getById(product.getTraId()).getName());
         iElasticProductDao.save(productDto);
         return product;
@@ -75,5 +83,46 @@ public class ProductService implements IProductService {
     public ResultResponse getPage(Integer limit, Integer page, String keyword) {
 
         return iElasticProductDao.search(keyword, limit, page);
+    }
+
+    @Override
+    public ResultResponse<ProductDto> getListProduct(Integer limit, Integer page) {
+
+        Pageable pageable = PageRequest.of(page, 255, Sort.by("id").descending());
+        Page<Product> products = iProductDao.findAll(pageable);
+        Long total = products.getTotalElements();
+        List<ProductDto> productDtos = new ArrayList<>();
+        products.get().forEach(product -> {productDtos.add(Constants.SERIALIZER.convertValue(product,ProductDto.class));});
+        ResultResponse<ProductDto> resultResponse = new ResultResponse<>();
+        resultResponse.setData(productDtos);
+        resultResponse.setLimit(limit);
+        resultResponse.setPage(page);
+        resultResponse.setTotal(total);
+        resultResponse.setTotalPage((int) (total / limit));
+        return resultResponse;
+
+    }
+
+    @Override
+    public List<Product> getListProduct() {
+        return iProductDao.findAll();
+    }
+
+    @Override
+    public ProductDto changeActive(ProductDto productDto) throws Exception {
+        Product product = iProductDao.getById(productDto.getId());
+        if (product==null){
+            throw new Exception("product  not exist");
+        }
+        if (productDto.getStatus()!=null)
+            product.setStatus(productDto.getStatus());
+        ProductDto productDto1 = Constants.SERIALIZER.convertValue(product,ProductDto.class);
+        ProductType productType = iProductTypeDao.getById(product.getPtId());
+        productDto1.setGroupName(iProductGroupDao.getNameById(productType.getProductGroupId()));
+        productDto1.setNameType(productType.getName());
+        productDto1.setPromotionName( product.getPromId() != null ? iPromotionDao.getById(product.getPromId()).getName() : "");
+        productDto1.setTrademarkName(iTrademarkDao.getById(product.getTraId()).getName());
+        iElasticProductDao.save(productDto1);
+        return Constants.SERIALIZER.convertValue(iProductDao.save(product),ProductDto.class);
     }
 }

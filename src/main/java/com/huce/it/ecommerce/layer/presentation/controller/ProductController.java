@@ -36,7 +36,17 @@ public class ProductController {
     }
 
     @GetMapping("get-list")
-    public Response getListProduct(@RequestParam(name = "limit", defaultValue = "10", required = false) Integer limit,
+    public Response getListProduct(@RequestParam(name = "limit", defaultValue = "255", required = false) Integer limit,
+                                   @RequestParam(name = "page", defaultValue = "0", required = false) Integer page){
+        try {
+            return ResponseFactory.getSuccessResponse(Response.SUCCESS,iProductService.getListProduct(limit,page));
+        }catch (Exception  exception){
+            return ResponseFactory.getClientErrorResponse(exception.getMessage());
+        }
+    }
+
+    @GetMapping("get-es")
+    public Response getListProductEs(@RequestParam(name = "limit", defaultValue = "255", required = false) Integer limit,
                                    @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
                                    @RequestParam(name = "keyword",required = false)String keyword){
         try {

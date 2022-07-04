@@ -1,11 +1,9 @@
 package com.huce.it.ecommerce.layer.application.domain.service.impl;
 
 import com.huce.it.ecommerce.config.Constants;
-import com.huce.it.ecommerce.layer.application.domain.dao.IProductGroupDao;
 import com.huce.it.ecommerce.layer.application.domain.dao.ITrademarkDao;
-import com.huce.it.ecommerce.layer.application.domain.entity.ProductGroup;
+import com.huce.it.ecommerce.layer.application.domain.dao.elasticsearch.IElasticTrademarkDao;
 import com.huce.it.ecommerce.layer.application.domain.entity.Trademark;
-import com.huce.it.ecommerce.layer.application.domain.model.dto.ProductGroupDto;
 import com.huce.it.ecommerce.layer.application.domain.model.dto.TrademarkDto;
 import com.huce.it.ecommerce.layer.application.domain.service.ITrademarkService;
 import com.huce.it.ecommerce.unitity.response.ResultResponse;
@@ -17,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,18 +24,20 @@ public class TrademarkService implements ITrademarkService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ITrademarkDao iTrademarkDao;
+    private final IElasticTrademarkDao iElasticTrademarkDao;
 
-    public TrademarkService(ITrademarkDao iTrademarkDao) {
+    public TrademarkService(ITrademarkDao iTrademarkDao, IElasticTrademarkDao iElasticTrademarkDao) {
         this.iTrademarkDao = iTrademarkDao;
+        this.iElasticTrademarkDao = iElasticTrademarkDao;
     }
 
 
     @Override
-    public TrademarkDto createTrademark(TrademarkDto trademarkDto) {
+    public TrademarkDto createTrademark(TrademarkDto trademarkDto) throws IOException {
         Trademark trademark = Constants.SERIALIZER.convertValue(trademarkDto,Trademark.class);
-        iTrademarkDao.save(trademark);
-        logger.info("create product group " +trademark.getName());
-        return Constants.SERIALIZER.convertValue(iTrademarkDao.save(trademark), TrademarkDto.class);
+        Trademark trademarkEs = iTrademarkDao.save(trademark);
+        iElasticTrademarkDao.save(Constants.SERIALIZER.convertValue(trademarkEs, TrademarkDto.class));
+        return Constants.SERIALIZER.convertValue(trademarkEs, TrademarkDto.class);
     }
 
     @Override
@@ -48,6 +49,7 @@ public class TrademarkService implements ITrademarkService {
         if (trademarkDto.getStatus()!=null)
             trademark.setStatus(trademarkDto.getStatus());
 
+        iElasticTrademarkDao.save(Constants.SERIALIZER.convertValue(trademark, TrademarkDto.class));
         return Constants.SERIALIZER.convertValue(iTrademarkDao.save(trademark),TrademarkDto.class);
     }
 
@@ -59,6 +61,8 @@ public class TrademarkService implements ITrademarkService {
         }
         if (trademarkDto.getName()!=null)
             trademark.setName(trademarkDto.getName());
+
+        iElasticTrademarkDao.save(Constants.SERIALIZER.convertValue(trademark, TrademarkDto.class));
         return Constants.SERIALIZER.convertValue(iTrademarkDao.save(trademark),TrademarkDto.class);
     }
 
@@ -81,5 +85,15 @@ public class TrademarkService implements ITrademarkService {
     @Override
     public TrademarkDto getTrademark(Integer id) {
         return Constants.SERIALIZER.convertValue(iTrademarkDao.getById(id),TrademarkDto.class);
+    }
+
+    @Override
+    public ResultResponse getPage(Integer limit, Integer page, String keyword) {
+        return iElasticTrademarkDao.search(keyword , limit , page);
+    }
+
+    @Override
+    public List<Trademark> getLisTrademark() {
+        return iTrademarkDao.findAll();
     }
 }
